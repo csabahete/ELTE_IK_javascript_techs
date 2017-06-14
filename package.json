@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    // "start": "node server.js",
+    "start": "node ./app/server.js",
     "test": "mocha ./ ./app"
   },
   "repository": {
@@ -18,9 +18,8 @@
   },
   "homepage": "https://github.com/csabahete/ELTE_IK_javascript_techs#readme",
   "dependencies": {
-    "body-parser": "^1.17.2",
     "chai": "^4.0.2",
-    "express": "^4.15.3",
+    "koa": "^2.2.0",
     "mocha": "^3.4.2",
     "supertest": "^3.0.0"
   }
