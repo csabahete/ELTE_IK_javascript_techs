@@ -1,0 +1,153 @@
+<!doctype html>
+<html ng-app="Caesar">
+
+<head>
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Optimize mobile viewport -->
+    <title>Caesar kódolás </title>
+
+
+    <!--Bootstrap-->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+
+<body ng-controller="MainController" ng-cloak class="col-md-12">
+
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">HOME</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#" ng-click="state = 'set-offset-key';">Kód megadása</a></li>
+                <li class="active"><a href="#" ng-click="state = 'crypt';">Kódolás/dekódolás</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="alert alert-danger" ng-if="error">{{error}}</div>
+
+    <div id="content" ng-if="state === 'set-offset-key'">
+        <div class="col-md-6">
+            <form class="form-horizontal" ng-submit="getOffset()">
+                <div class="form-group">
+                    <label class="sr-only" for="key">Kulcs:</label>
+                    <input type="text" class="form-control" id="key" placeholder="Kulcs..." name="key" ng-trim="true" ng-model="offset.key">
+                </div>
+                <button type="submit" class="btn btn-default">Mehet</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="content" class="row" ng-if="state !== 'set-offset-key'">
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="sr-only" for="original">Szöveg:</label>
+                        <textarea class="form-control" id="txt" placeholder="Szöveg..." rows="10" name="txt" ng-trim="true" ng-model="txt"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-default" ng-click="encrypt(txt)">Kódolás</button>
+                    <button type="button" class="btn btn-default" ng-click="decrypt(txt)">Dekódolás</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-6" style="border:1px solid black; margin-top:15px;" ng-if="result">
+                <p>{{result}}</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.4/angular-resource.min.js"></script>
+
+<script>
+    angular.module('Caesar', ['ngResource'])
+        .controller('MainController', ($scope, AppService) => {
+            $scope.error = '';
+            $scope.result = '';
+
+            $scope.state = 'set-offset-key';
+            $scope.offset = {
+                key: '',
+                value: 0
+            };
+
+            $scope.getOffset = () => {
+                $scope.result = '';
+                AppService.getOffset({}, { key: $scope.offset.key }).$promise
+                    .then((response) => {
+                        $scope.offset.value = response.offset;
+                        $scope.state = 'crypt';
+                    }).catch((err) => {
+                        $scope.error = JSON.stringify(err);
+                    });
+            };
+
+            $scope.encrypt = function (txt) {
+                if (txt)
+                    $scope.result = encode(txt, $scope.offset.value);
+            };
+
+            $scope.decrypt = function (txt) {
+                if (txt)
+                    $scope.result = decode(txt, $scope.offset.value);
+            };
+
+            function encode(str, offset) {
+                while (offset < 0)
+                    offset += 26;
+                let output = '';
+                for (let i = 0; i < str.length; ++i) {
+                    let c = str.charAt(i);
+                    if (c.match(/[a-z]/i)) {
+                        let code = str.charCodeAt(i);
+                        if ((code >= 65) && (code <= 90))
+                            c = String.fromCharCode(((code - 65 + offset) % 26) + 65);
+                        else if ((code >= 97) && (code <= 122))
+                            c = String.fromCharCode(((code - 97 + offset) % 26) + 97);
+                    }
+                    output += c;
+                }
+                return output;
+            };
+
+            function decode(str, offset) {
+                while (offset < 0)
+                    offset += 26;
+                let output = '';
+                for (let i = 0; i < str.length; ++i) {
+                    let c = str.charAt(i);
+                    if (c.match(/[a-z]/i)) {
+                        let code = str.charCodeAt(i);
+                        if ((code >= 65) && (code <= 90))
+                            c = String.fromCharCode((code - 65 - offset + 26) % 26 + 65);
+                        else if ((code >= 97) && (code <= 122))
+                            c = String.fromCharCode((code - 97 - offset + 26) % 26 + 97);
+                    }
+                    output += c;
+                }
+                return output;
+            }
+        }).factory('AppService', ($resource) => {
+            var service = $resource('/api/get-offset', {}, {
+                getOffset: {
+                    url: '/api/get-offset',
+                    method: 'POST',
+                },
+            });
+            return service;
+        });
+
+</script>
+
+</html>

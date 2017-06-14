@@ -1,20 +1,29 @@
-const port = 12345;
+"use strict";
+const path = require('path');
+const express = require('express');
+const app = express();                               // create our app w/ express
+const bodyParser = require('body-parser');    // pull information from HTML POST (express4)
+const caesarCodeClass = require('./caesar-code');
+const caesarCode = new caesarCodeClass();
+// configuration =================
 
-const Koa = require('koa');
-const app = new Koa();
 
-const router = require('./router');
+app.use(express.static(__dirname + '/'));                 // set the static files location /public/img will be /img for users
+app.use(bodyParser.urlencoded({ 'extended': 'true' }));            // parse application/x-www-form-urlencoded
+app.use(bodyParser.json());                                     // parse application/json
 
-// logger
-app.use(async (ctx, next) => {
-    const start = new Date();
-    await next();
-    const ms = new Date() - start;
-    console.log(`${ctx.method} ${ctx.url} - ${ms}`);
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, '../', 'index.html')); // load the single view file (angular will handle the page changes on the front-end)
 });
 
-app.use(router.routes());
-app.use(router.allowedMethods());
+app.post('/api/get-offset', function (req, res, next) {
+    let response = {
+        offset: caesarCode.getOffsetByString(req.body.key)
+    };
+    res.json(response);
+});
 
-app.listen(port);
-console.log(`app listening on port ${port}`);
+
+// listen (start app with node server.js) ======================================
+app.listen(12345);
+console.log("app listening on port 12345");
