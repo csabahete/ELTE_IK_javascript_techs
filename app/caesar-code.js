@@ -1,5 +1,5 @@
 'use strict';
-class CaesarCode {
+module.exports = class CaesarCode {
     constructor() { };
 
     getOffsetByString(key) {
@@ -63,5 +63,3 @@ class CaesarCode {
         return sum;
     }
 };
-
-module.exports = CaesarCode;

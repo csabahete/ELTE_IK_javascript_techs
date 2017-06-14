@@ -3,7 +3,7 @@ const CaesarCode = new caesarCodeClass();
 
 var expect = require('chai').expect;
 
-describe('BestMusicFinder', function () {
+describe('CaesarCode', function () {
     describe('#getOffsetByString', function () {
         it('should throw error on non-string key', function () {
             expect(function () {
@@ -56,6 +56,10 @@ describe('BestMusicFinder', function () {
         it('should leave non-english letters intact', function () {
             expect(CaesarCode.encode('áéíóöőúüűÁÉÍÓÖŐÚÜŰ', 1)).to.be.eql('áéíóöőúüűÁÉÍÓÖŐÚÜŰ');
         });
+       
+        it('should leave spaces intact', function () {
+            expect(CaesarCode.encode('AbC DeF', 1)).to.be.eql('BcD EfG');
+        });
     });
 
     describe('#decode', function () {
@@ -93,6 +97,10 @@ describe('BestMusicFinder', function () {
         
         it('should leave non-english letters intact', function () {
             expect(CaesarCode.decode('áéíóöőúüűÁÉÍÓÖŐÚÜŰ', 1)).to.be.eql('áéíóöőúüűÁÉÍÓÖŐÚÜŰ');
+        });
+       
+        it('should leave spaces intact', function () {
+            expect(CaesarCode.decode('BcD EfG', 1)).to.be.eql('AbC DeF');
         });
     });
 });

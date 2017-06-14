@@ -18,8 +18,11 @@
   },
   "homepage": "https://github.com/csabahete/ELTE_IK_javascript_techs#readme",
   "dependencies": {
-    "chai": "^4.0.2",
     "koa": "^2.2.0",
+    "koa-router": "^7.2.0"
+  },
+  "devDependencies": {
+    "chai": "^4.0.2",
     "mocha": "^3.4.2",
     "supertest": "^3.0.0"
   }
