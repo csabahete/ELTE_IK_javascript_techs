@@ -1,3 +1,14 @@
+# IDE and editor specific files 
+/nbproject
+.idea
+*.iml
+.project
+.settings
+# OS generated files 
+Icon?
+ehthumbs.db
+Thumbs.db 
+
 # Logs
 logs
 *.log

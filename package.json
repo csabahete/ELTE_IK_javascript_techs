@@ -1,0 +1,27 @@
+{
+  "name": "elte-ik-javascript-techs-assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    // "start": "node server.js",
+    "test": "mocha ./ ./app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/csabahete/ELTE_IK_javascript_techs.git"
+  },
+  "author": "Hete Csaba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/csabahete/ELTE_IK_javascript_techs/issues"
+  },
+  "homepage": "https://github.com/csabahete/ELTE_IK_javascript_techs#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "chai": "^4.0.2",
+    "express": "^4.15.3",
+    "mocha": "^3.4.2",
+    "supertest": "^3.0.0"
+  }
+}
